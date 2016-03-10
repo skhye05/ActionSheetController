@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'ActionSheetController'
-  s.version = '0.0.1'
+  s.version = '0.1'
   s.license = 'MIT'
   s.summary = 'A short description of ActionSheetController.'
   s.homepage = 'https://github.com/cuzv/ActionSheetController'
