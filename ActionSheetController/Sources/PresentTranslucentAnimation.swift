@@ -26,7 +26,7 @@
 
 import UIKit
 
-public final class PresentTranslucentAnimation: NSObject {
+public final class PresentTranslucentAnimation: NSObject {    
     private var presentedAnimation: Bool = false
     private var transitionCoverView: UIView?
     

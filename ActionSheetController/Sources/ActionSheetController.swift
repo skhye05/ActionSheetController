@@ -137,11 +137,15 @@ public final class ActionSheetController: UIViewController {
     override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
 
-        dismiss()
+        dismissWithCompletion(nil)
+    }
+    
+    internal func dismissWithCompletion(completion: (() -> Void)?) {
+        presentingViewController?.dismissViewControllerAnimated(true, completion: completion)
     }
     
     internal func dismiss() {
-        presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        dismissWithCompletion(nil)
     }
 }
 
@@ -279,9 +283,11 @@ extension ActionSheetController: UITableViewDataSource {
 extension ActionSheetController: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
+
         let action = actions[indexPath.row]
-        action.handler?(action)
+        dismissWithCompletion { () -> Void in
+            action.handler?(action)
+        }
     }
 }
 
