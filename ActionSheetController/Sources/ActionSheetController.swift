@@ -27,6 +27,7 @@
 import UIKit
 
 public final class ActionSheetController: UIViewController {
+    private let fixedRowHeight: CGFloat = 50
     private let cancelTitle: String
     private let cancelTitleColor: UIColor
     public private(set) var actions: [SheetAction] = []
@@ -89,7 +90,7 @@ public final class ActionSheetController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: CGRectZero, style: .Plain)
-        tableView.rowHeight = 44
+        tableView.rowHeight = self.fixedRowHeight
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.tableFooterView = UIView(frame: CGRectMake(0, 0, 0, CGFloat.min))
@@ -158,10 +159,10 @@ public extension ActionSheetController {
 private extension ActionSheetController {
     private func renewConstraint() -> NSLayoutConstraint {
         func containerViewHeight() -> CGFloat {
-            let height = CGFloat(actions.count) * 44.0
+            let height = CGFloat(actions.count) * fixedRowHeight
             let maxHeight = CGRectGetHeight(view.bounds) * CGFloat(0.67)
             
-            return (height > maxHeight ? maxHeight : height) + 49
+            return (height > maxHeight ? maxHeight : height) + fixedRowHeight + 5
         }
         
         return NSLayoutConstraint(
@@ -255,7 +256,7 @@ private extension ActionSheetController {
                 toItem: containerView,
                 attribute: .Height,
                 multiplier: 0,
-                constant: 44
+                constant: fixedRowHeight
             )
         ])
     }
