@@ -180,7 +180,7 @@ private extension ActionSheetController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        cancelButton.addTarget(self, action: Selector("dismiss"), forControlEvents: .TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(ActionSheetController.dismiss), forControlEvents: .TouchUpInside)
         
         view.addSubview(containerView)
         containerView.addSubview(tableView)
