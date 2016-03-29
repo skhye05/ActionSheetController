@@ -96,7 +96,7 @@ public final class ActionSheetController: UIViewController {
         tableView.tableFooterView = UIView(frame: CGRectMake(0, 0, 0, CGFloat.min))
         tableView.alwaysBounceVertical = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor.whiteColor()
+        tableView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
         
         tableView.registerClass(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
         
@@ -106,17 +106,16 @@ public final class ActionSheetController: UIViewController {
     lazy var cancelButton: UIButton = {
         let button = UIButton(type: .Custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.whiteColor()
+        button.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
         button.setTitleColor(self.cancelTitleColor, forState: .Normal)
-        button.setBackgroundImage(UIImageFromColor(UIColorFromRed(248, green: 248, blue: 248)), forState: .Highlighted)
+        button.setBackgroundImage(UIImageFromColor(UIColor.blackColor().colorWithAlphaComponent(0.1)), forState: .Highlighted)
         button.setTitle(self.cancelTitle, forState: .Normal)
         return button
     }()
     
     lazy var containerView: UIView = {
-        let view = UIView()
+        let view = makeBlurView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColorFromRed(238, green: 238, blue: 238)
         return view
     }()
     
@@ -333,12 +332,14 @@ private final class ActionSheetCell: UITableViewCell {
     private func setupUserInterface() {
         layoutMargins = UIEdgeInsetsZero
         separatorInset = UIEdgeInsetsZero
-        backgroundColor = UIColor.whiteColor()
+        backgroundColor = UIColor.clearColor()
+        contentView.backgroundColor = UIColor.clearColor()
         selectedBackgroundView = {
             let view = UIView()
-            view.backgroundColor = UIColorFromRed(248, green: 248, blue: 248)
+            view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
             return view
         }()
+        
         
         contentView.addSubview(contentLabel)
         
@@ -386,3 +387,13 @@ private func UIImageFromColor(color: UIColor, size: CGSize = CGSizeMake(1, 1)) -
     return image
 }
 
+private func makeBlurView() -> UIView {
+    if NSProcessInfo().isOperatingSystemAtLeastVersion(NSOperatingSystemVersion(majorVersion: 8, minorVersion: 0, patchVersion: 0)) {
+        return UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+    } else {
+        let visualView = UIToolbar(frame: CGRectZero)
+        visualView.barStyle = .Default
+        visualView.translucent = true
+        return visualView
+    }
+}

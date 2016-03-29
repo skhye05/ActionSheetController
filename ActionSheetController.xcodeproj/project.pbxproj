@@ -16,7 +16,33 @@
 		46778E571C9170FF004AF36E /* ActionSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46778E561C9170FF004AF36E /* ActionSheetController.swift */; };
 		46778E591C91711C004AF36E /* PresentTranslucentAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46778E581C91711C004AF36E /* PresentTranslucentAnimation.swift */; };
 		46778E5B1C917442004AF36E /* SheetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46778E5A1C917442004AF36E /* SheetAction.swift */; };
+		467E0DD51CAA63D400257CF3 /* ActionSheetController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46778E2F1C916FF0004AF36E /* ActionSheetController.framework */; };
+		467E0DD61CAA63D400257CF3 /* ActionSheetController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46778E2F1C916FF0004AF36E /* ActionSheetController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		467E0DD71CAA63D400257CF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 46778E261C916FF0004AF36E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 46778E2E1C916FF0004AF36E;
+			remoteInfo = ActionSheetController;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		467E0DD91CAA63D400257CF3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				467E0DD61CAA63D400257CF3 /* ActionSheetController.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		46778E2F1C916FF0004AF36E /* ActionSheetController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActionSheetController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				467E0DD51CAA63D400257CF3 /* ActionSheetController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,10 +169,12 @@
 				46778E3F1C91707E004AF36E /* Sources */,
 				46778E401C91707E004AF36E /* Frameworks */,
 				46778E411C91707E004AF36E /* Resources */,
+				467E0DD91CAA63D400257CF3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				467E0DD81CAA63D400257CF3 /* PBXTargetDependency */,
 			);
 			name = Sample;
 			productName = Sample;
@@ -230,6 +259,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		467E0DD81CAA63D400257CF3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 46778E2E1C916FF0004AF36E /* ActionSheetController */;
+			targetProxy = 467E0DD71CAA63D400257CF3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		46778E491C91707E004AF36E /* Main.storyboard */ = {
@@ -381,6 +418,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.Sample;
@@ -392,6 +430,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.Sample;
