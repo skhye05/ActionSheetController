@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "ActionSheetController"
-  s.version = "0.2.0"
+  s.version = "0.2.1"
   s.license = "MIT"
   s.summary = "ActionSheetController is an UIAlertController's APIs like ActionSheet control."
   s.homepage = "https://github.com/cuzv/ActionSheetController"

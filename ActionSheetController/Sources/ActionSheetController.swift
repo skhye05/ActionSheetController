@@ -96,7 +96,7 @@ public final class ActionSheetController: UIViewController {
         tableView.tableFooterView = UIView(frame: CGRectMake(0, 0, 0, CGFloat.min))
         tableView.alwaysBounceVertical = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
+        tableView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.8)
         
         tableView.registerClass(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
         
@@ -106,9 +106,9 @@ public final class ActionSheetController: UIViewController {
     lazy var cancelButton: UIButton = {
         let button = UIButton(type: .Custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
+        button.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.8)
         button.setTitleColor(self.cancelTitleColor, forState: .Normal)
-        button.setBackgroundImage(UIImageFromColor(UIColor.blackColor().colorWithAlphaComponent(0.1)), forState: .Highlighted)
+        button.setBackgroundImage(UIImageFromColor(UIColor.blackColor().colorWithAlphaComponent(0.2)), forState: .Highlighted)
         button.setTitle(self.cancelTitle, forState: .Normal)
         return button
     }()
