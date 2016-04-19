@@ -25,60 +25,25 @@
 //
 
 import UIKit
+import PresentAnimatedTransitioningController
 
 public final class ActionSheetController: UIViewController {
-    private let fixedRowHeight: CGFloat = 50
-    private let cancelTitle: String
-    private let cancelTitleColor: UIColor
     public private(set) var actions: [SheetAction] = []
     
+    private static let fixedRowHeight: CGFloat = 50
+    private let cancelTitle: String
+    private let cancelTitleColor: UIColor
+    
     private var containerViewHeightConstraint: NSLayoutConstraint!
+    private var containerViewAppearedVerticalConstraint: NSLayoutConstraint!
+    private var containerViewDisAppearedVerticalConstraint: NSLayoutConstraint!
     
-    private lazy var containerViewAppearedVerticalConstraint: NSLayoutConstraint = {
-        return NSLayoutConstraint(
-            item: self.containerView,
-            attribute: .Bottom,
-            relatedBy: .Equal,
-            toItem: self.view,
-            attribute: .Bottom,
-            multiplier: 1,
-            constant: 0
-        )
-    }()
-    
-    private lazy var containerViewDisAppearedVerticalConstraint: NSLayoutConstraint = {
-        return NSLayoutConstraint(
-            item: self.containerView,
-            attribute: .Top,
-            relatedBy: .Equal,
-            toItem: self.view,
-            attribute: .Bottom,
-            multiplier: 1,
-            constant: 0
-        )
-    }()
-    
-    lazy var animation: PresentTranslucentAnimation = {
-        return PresentTranslucentAnimation(preparePresentAnimation: { [unowned self] _ in
-                self.view.layoutIfNeeded()
-                self.view.removeConstraint(self.containerViewDisAppearedVerticalConstraint)
-                self.view.addConstraint(self.containerViewAppearedVerticalConstraint)
-            }, presentAnimation: { [unowned self] _ in
-                self.view.layoutIfNeeded()
-            }, prepareDismissAnimation: { [unowned self] _ in
-                self.view.removeConstraint(self.containerViewAppearedVerticalConstraint)
-                self.view.addConstraint(self.containerViewDisAppearedVerticalConstraint)
-            }, dismissAnimation: { [unowned self] _ in
-                self.view.layoutIfNeeded()
-        })
-    }()
+    private let transitioningController: PresentAnimatedTransitioningController = PresentAnimatedTransitioningController()
     
     public init(cancelTitle: String = "取消", cancelTitleColor: UIColor = UIColor.blackColor()) {
         self.cancelTitle = cancelTitle
         self.cancelTitleColor = cancelTitleColor
-        
         super.init(nibName: nil, bundle: nil)
-        
         modalPresentationStyle = .Custom
         modalTransitionStyle = .CrossDissolve
         transitioningDelegate = self
@@ -88,32 +53,27 @@ public final class ActionSheetController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView(frame: CGRectZero, style: .Plain)
-        tableView.rowHeight = self.fixedRowHeight
+        tableView.rowHeight = ActionSheetController.fixedRowHeight
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.tableFooterView = UIView(frame: CGRectMake(0, 0, 0, CGFloat.min))
         tableView.alwaysBounceVertical = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.8)
-        
-        tableView.registerClass(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
-        
         return tableView
     }()
     
-    lazy var cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .Custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.8)
-        button.setTitleColor(self.cancelTitleColor, forState: .Normal)
         button.setBackgroundImage(UIImageFromColor(UIColor.blackColor().colorWithAlphaComponent(0.2)), forState: .Highlighted)
-        button.setTitle(self.cancelTitle, forState: .Normal)
         return button
     }()
     
-    lazy var containerView: UIView = {
+    private let containerView: UIView = {
         let view = makeBlurView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -121,69 +81,68 @@ public final class ActionSheetController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+        prepareTransitioningController()
+        prepareConstraints()
         setupUserInterface()
         setupConstraints()
     }
     
-    public override func updateViewConstraints() {
-        view.removeConstraints([containerViewHeightConstraint])
-        containerViewHeightConstraint = renewConstraint()
-        view.addConstraint(containerViewHeightConstraint)
-        
-        super.updateViewConstraints()
-    }
-    
-    override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
-
-        dismissWithCompletion(nil)
-    }
-    
-    internal func dismissWithCompletion(completion: (() -> Void)?) {
-        presentingViewController?.dismissViewControllerAnimated(true, completion: completion)
-    }
-    
-    internal func dismiss() {
-        dismissWithCompletion(nil)
-    }
-}
-
-public extension ActionSheetController {
-    public func addAction(action: SheetAction) {
-        actions.append(action)
-    }
-}
-
-private extension ActionSheetController {
-    private func renewConstraint() -> NSLayoutConstraint {
-        func containerViewHeight() -> CGFloat {
-            let height = CGFloat(actions.count) * fixedRowHeight
-            let maxHeight = CGRectGetHeight(view.bounds) * CGFloat(0.67)
-            
-            return (height > maxHeight ? maxHeight : height) + fixedRowHeight + 5
+    private func prepareTransitioningController() {
+        transitioningController.prepareForPresentActionHandler = { [unowned self] (fromView, toView) in
+            toView.layoutIfNeeded()
+            toView.removeConstraint(self.containerViewDisAppearedVerticalConstraint)
+            toView.addConstraint(self.containerViewAppearedVerticalConstraint)
         }
+        transitioningController.duringPresentingActionHandler = { (fromView, toView) in
+            toView.layoutIfNeeded()
+        }
+        transitioningController.prepareForDismissActionHandler = { [unowned self] (fromView, toView) in
+            fromView.removeConstraint(self.containerViewAppearedVerticalConstraint)
+            fromView.addConstraint(self.containerViewDisAppearedVerticalConstraint)
+        }
+        transitioningController.duringDismissingActionHandler = { (fromView, toView) in
+            fromView.layoutIfNeeded()
+        }
+    }
+    
+    private func prepareConstraints() {
+        containerViewAppearedVerticalConstraint = {
+            return NSLayoutConstraint(
+                item: containerView,
+                attribute: .Bottom,
+                relatedBy: .Equal,
+                toItem: view,
+                attribute: .Bottom,
+                multiplier: 1,
+                constant: 0
+            )
+        }()
         
-        return NSLayoutConstraint(
-            item: containerView,
-            attribute: .Height,
-            relatedBy: .Equal,
-            toItem: view,
-            attribute: .Height,
-            multiplier: 0,
-            constant: containerViewHeight()
-        )
+        containerViewDisAppearedVerticalConstraint = {
+            return NSLayoutConstraint(
+                item: containerView,
+                attribute: .Top,
+                relatedBy: .Equal,
+                toItem: view,
+                attribute: .Bottom,
+                multiplier: 1,
+                constant: 0
+            )
+        }()
     }
     
     private func setupUserInterface() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        
+        cancelButton.setTitleColor(cancelTitleColor, forState: .Normal)
+        cancelButton.setTitle(cancelTitle, forState: .Normal)
         cancelButton.addTarget(self, action: #selector(ActionSheetController.dismiss), forControlEvents: .TouchUpInside)
         
         view.addSubview(containerView)
-        containerView.addSubview(tableView)
         containerView.addSubview(cancelButton)
+        containerView.addSubview(tableView)
+        
+        tableView.registerClass(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
     private func setupConstraints() {
@@ -226,7 +185,7 @@ private extension ActionSheetController {
                 toItem: cancelButton,
                 attribute: .Top,
                 multiplier: 1,
-                constant: -5
+                constant: -6
             )
         ])
         
@@ -255,12 +214,56 @@ private extension ActionSheetController {
                 toItem: containerView,
                 attribute: .Height,
                 multiplier: 0,
-                constant: fixedRowHeight
+                constant: ActionSheetController.fixedRowHeight
             )
         ])
     }
+    
+    public override func updateViewConstraints() {
+        view.removeConstraints([containerViewHeightConstraint])
+        containerViewHeightConstraint = renewConstraint()
+        view.addConstraint(containerViewHeightConstraint)
+        
+        super.updateViewConstraints()
+    }
+    
+    override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        dismissWithCompletion(nil)
+    }
+    
+    internal func dismissWithCompletion(completion: (() -> Void)?) {
+        presentingViewController?.dismissViewControllerAnimated(true, completion: completion)
+    }
+    
+    internal func dismiss() {
+        dismissWithCompletion(nil)
+    }
+    
+    public func addAction(action: SheetAction) {
+        actions.append(action)
+    }
+    
+    // MARK: - UI
+    
+    private func renewConstraint() -> NSLayoutConstraint {
+        func containerViewHeight() -> CGFloat {
+            let height = CGFloat(actions.count) * ActionSheetController.fixedRowHeight
+            let maxHeight = CGRectGetHeight(view.bounds) * CGFloat(0.67)
+            return (height > maxHeight ? maxHeight : height) + ActionSheetController.fixedRowHeight + 6
+        }
+        
+        return NSLayoutConstraint(
+            item: containerView,
+            attribute: .Height,
+            relatedBy: .Equal,
+            toItem: view,
+            attribute: .Height,
+            multiplier: 0,
+            constant: containerViewHeight()
+        )
+    }
 }
-
 
 // MARK: - Table view methods
 
@@ -295,11 +298,11 @@ extension ActionSheetController: UITableViewDelegate {
 
 extension ActionSheetController: UIViewControllerTransitioningDelegate {
     public func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return animation.prepareForPresent()
+        return transitioningController.prepareForPresent()
     }
     
     public func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return animation.prepareForDismiss()
+        return transitioningController.prepareForDismiss()
     }
 }
 
@@ -310,7 +313,7 @@ private final class ActionSheetCell: UITableViewCell {
         return NSStringFromClass(self)
     }
     
-    let contentLabel: UILabel = {
+    private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.blackColor()
         label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
@@ -321,7 +324,6 @@ private final class ActionSheetCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setupUserInterface()
     }
     
@@ -339,7 +341,6 @@ private final class ActionSheetCell: UITableViewCell {
             view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
             return view
         }()
-        
         
         contentView.addSubview(contentLabel)
         
@@ -389,7 +390,7 @@ private func UIImageFromColor(color: UIColor, size: CGSize = CGSizeMake(1, 1)) -
 
 private func makeBlurView() -> UIView {
     if NSProcessInfo().isOperatingSystemAtLeastVersion(NSOperatingSystemVersion(majorVersion: 8, minorVersion: 0, patchVersion: 0)) {
-        return UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+        return UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
     } else {
         let visualView = UIToolbar(frame: CGRectZero)
         visualView.barStyle = .Default

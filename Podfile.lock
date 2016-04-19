@@ -1,0 +1,10 @@
+PODS:
+  - PresentAnimatedTransitioningController (0.1.0)
+
+DEPENDENCIES:
+  - PresentAnimatedTransitioningController (~> 0.1)
+
+SPEC CHECKSUMS:
+  PresentAnimatedTransitioningController: 2b8f942cf651b7cf5e3b7754bb7e913474f558e9
+
+COCOAPODS: 0.39.0
