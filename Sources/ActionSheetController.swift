@@ -376,16 +376,18 @@ private func UIColorFromRed(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: 
     return UIColor(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha / 100)
 }
 
-private func UIImageFromColor(color: UIColor, size: CGSize = CGSizeMake(1, 1)) -> UIImage {
+private func UIImageFromColor(color: UIColor, size: CGSize = CGSizeMake(1, 1)) -> UIImage? {
     UIGraphicsBeginImageContext(size)
-    let context = UIGraphicsGetCurrentContext()
+    guard let context = UIGraphicsGetCurrentContext() else {
+        return nil
+    }
     CGContextSetFillColorWithColor(context, color.CGColor)
     let rect = CGRectMake(0, 0, size.width, size.height)
     CGContextFillRect(context, rect)
     let image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     
-    return image
+    return image!
 }
 
 private func makeBlurView() -> UIView {
