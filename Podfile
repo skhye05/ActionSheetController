@@ -3,5 +3,5 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 target 'ActionSheetController' do
-    pod 'PresentAnimatedTransitioningController', '~> 1.0'
+    pod 'PresentAnimatedTransitioningController', '~> 2.0'
 end

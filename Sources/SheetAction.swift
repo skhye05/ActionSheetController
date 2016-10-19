@@ -31,7 +31,7 @@ public final class SheetAction {
     public let titleColor: UIColor
     public let handler: ((SheetAction) -> Void)?
     
-    public init(title: String, titleColor: UIColor = UIColor.blackColor(), handler: ((SheetAction) -> Void)? = nil) {
+    public init(title: String, titleColor: UIColor = UIColor.black, handler: ((SheetAction) -> Void)? = nil) {
         self.title = title
         self.titleColor = titleColor        
         self.handler = handler

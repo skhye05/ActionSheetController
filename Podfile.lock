@@ -1,12 +1,12 @@
 PODS:
-  - PresentAnimatedTransitioningController (1.0.0)
+  - PresentAnimatedTransitioningController (2.0.0)
 
 DEPENDENCIES:
-  - PresentAnimatedTransitioningController (~> 1.0)
+  - PresentAnimatedTransitioningController (~> 2.0)
 
 SPEC CHECKSUMS:
-  PresentAnimatedTransitioningController: d8fb8f40b42021dcc494fca994f70a0c66357ee8
+  PresentAnimatedTransitioningController: 5117496d70a062e807f3650a5f905ffda1887bb0
 
-PODFILE CHECKSUM: 6e6a3686ad300e3f289a17e126e88519e55b9a10
+PODFILE CHECKSUM: ac799eabe4e627c1556e1423f1d0d27627c82555
 
 COCOAPODS: 1.1.0.rc.2

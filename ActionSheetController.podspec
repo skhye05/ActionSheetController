@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "ActionSheetController"
-  s.version = "1.0.0"
+  s.version = "2.0.0"
   s.license = "MIT"
   s.summary = "ActionSheetController is an UIAlertController's APIs like ActionSheet control."
   s.homepage = "https://github.com/cuzv/ActionSheetController"
@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.source_files = "Sources/*.swift"
   s.requires_arc = true
-  s.dependency "PresentAnimatedTransitioningController", "~> 1.0"
+  s.dependency "PresentAnimatedTransitioningController", "~> 2.0"
 end

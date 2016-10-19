@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		461549871DB7098200DA6DC4 /* Pods_ActionSheetController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 461549861DB7098200DA6DC4 /* Pods_ActionSheetController.framework */; };
+		4615498A1DB709F400DA6DC4 /* PresentAnimatedTransitioningController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 461549881DB709B800DA6DC4 /* PresentAnimatedTransitioningController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		46778E331C916FF0004AF36E /* ActionSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = 46778E321C916FF0004AF36E /* ActionSheetController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		46778E461C91707E004AF36E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46778E451C91707E004AF36E /* AppDelegate.swift */; };
 		46778E481C91707E004AF36E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46778E471C91707E004AF36E /* ViewController.swift */; };
@@ -17,7 +19,6 @@
 		467E0DD61CAA63D400257CF3 /* ActionSheetController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46778E2F1C916FF0004AF36E /* ActionSheetController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		46D9CEC91CC644B9005F0B9B /* ActionSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D9CEC61CC644B9005F0B9B /* ActionSheetController.swift */; };
 		46D9CECB1CC644B9005F0B9B /* SheetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D9CEC81CC644B9005F0B9B /* SheetAction.swift */; };
-		F8B8BEEC953B0EE2D8338449 /* Pods_ActionSheetController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E2945275255AF5563BC00A /* Pods_ActionSheetController.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				4615498A1DB709F400DA6DC4 /* PresentAnimatedTransitioningController.framework in Embed Frameworks */,
 				467E0DD61CAA63D400257CF3 /* ActionSheetController.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -45,6 +47,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		461549861DB7098200DA6DC4 /* Pods_ActionSheetController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_ActionSheetController.framework; path = "../../Library/Developer/Xcode/DerivedData/ActionSheetController-ddgaterhlqsyzodsjrbtyottlfhj/Build/Products/Debug-iphonesimulator/Pods_ActionSheetController.framework"; sourceTree = "<group>"; };
+		461549881DB709B800DA6DC4 /* PresentAnimatedTransitioningController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PresentAnimatedTransitioningController.framework; path = "../../Library/Developer/Xcode/DerivedData/ActionSheetController-ddgaterhlqsyzodsjrbtyottlfhj/Build/Products/Debug-iphonesimulator/PresentAnimatedTransitioningController/PresentAnimatedTransitioningController.framework"; sourceTree = "<group>"; };
 		46778E2F1C916FF0004AF36E /* ActionSheetController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActionSheetController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46778E321C916FF0004AF36E /* ActionSheetController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionSheetController.h; sourceTree = "<group>"; };
 		46778E341C916FF0004AF36E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -57,9 +61,7 @@
 		46778E511C91707E004AF36E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		46D9CEC61CC644B9005F0B9B /* ActionSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionSheetController.swift; sourceTree = "<group>"; };
 		46D9CEC81CC644B9005F0B9B /* SheetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetAction.swift; sourceTree = "<group>"; };
-		63E2945275255AF5563BC00A /* Pods_ActionSheetController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActionSheetController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		87258EF33B0E273797AB562B /* Pods-ActionSheetController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActionSheetController.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActionSheetController/Pods-ActionSheetController.debug.xcconfig"; sourceTree = "<group>"; };
-		F5A29EE90F391399C525F758 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F70E7153FE19C343CB7CB8DD /* Pods-ActionSheetController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActionSheetController.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActionSheetController/Pods-ActionSheetController.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,7 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8B8BEEC953B0EE2D8338449 /* Pods_ActionSheetController.framework in Frameworks */,
+				461549871DB7098200DA6DC4 /* Pods_ActionSheetController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,8 +141,8 @@
 		D4EE80C9D6DF88F34558A632 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F5A29EE90F391399C525F758 /* Pods.framework */,
-				63E2945275255AF5563BC00A /* Pods_ActionSheetController.framework */,
+				461549881DB709B800DA6DC4 /* PresentAnimatedTransitioningController.framework */,
+				461549861DB7098200DA6DC4 /* Pods_ActionSheetController.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -454,7 +456,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -476,7 +478,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.ActionSheetController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -491,7 +493,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -506,7 +508,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
