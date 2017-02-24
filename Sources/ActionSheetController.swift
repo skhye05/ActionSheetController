@@ -31,6 +31,10 @@ public final class ActionSheetController: UIViewController {
     public fileprivate(set) var actions: [SheetAction] = []
     
     fileprivate static let fixedRowHeight: CGFloat = 50
+    
+    fileprivate let contentTitle: String
+    fileprivate let contentTitleColor: UIColor
+    
     fileprivate let cancelTitle: String
     fileprivate let cancelTitleColor: UIColor
     
@@ -40,7 +44,9 @@ public final class ActionSheetController: UIViewController {
     
     fileprivate let transitioningController: PresentAnimatedTransitioningController = PresentAnimatedTransitioningController()
     
-    public init(cancelTitle: String = "取消", cancelTitleColor: UIColor = UIColor.black) {
+    public init(title: String = "", titleColor: UIColor = UIColor.gray, cancelTitle: String = "取消", cancelTitleColor: UIColor = UIColor.black) {
+        contentTitle = title
+        contentTitleColor = titleColor
         self.cancelTitle = cancelTitle
         self.cancelTitleColor = cancelTitleColor
         super.init(nibName: nil, bundle: nil)
@@ -52,6 +58,31 @@ public final class ActionSheetController: UIViewController {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    fileprivate let labelBackedView: UIView = {
+        let view = makeBlurView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        return view
+    }()
+    
+    fileprivate let topBorderline: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+        return view
+    }()
+    
+    fileprivate let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.gray
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        label.lineBreakMode = .byTruncatingTail
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     fileprivate let tableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -132,6 +163,9 @@ public final class ActionSheetController: UIViewController {
     }
     
     fileprivate func setupUserInterface() {
+        titleLabel.text = contentTitle
+        titleLabel.textColor = contentTitleColor
+        
         cancelButton.setTitleColor(cancelTitleColor, for: UIControlState())
         cancelButton.setTitle(cancelTitle, for: UIControlState())
         cancelButton.addTarget(self, action: #selector(ActionSheetController._dismiss), for: .touchUpInside)
@@ -139,13 +173,17 @@ public final class ActionSheetController: UIViewController {
         view.addSubview(containerView)
         containerView.addSubview(cancelButton)
         containerView.addSubview(tableView)
-        
+        containerView.addSubview(labelBackedView)
+        labelBackedView.addSubview(topBorderline)
+        containerView.addSubview(titleLabel)
+
         tableView.register(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
     }
     
     fileprivate func setupConstraints() {
+        // containerView
         view.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[containerView]|",
@@ -160,6 +198,111 @@ public final class ActionSheetController: UIViewController {
             containerViewHeightConstraint
         ])
         
+        // titleLabel
+        if contentTitle.characters.count > 0 {
+            containerView.addConstraints(
+                NSLayoutConstraint.constraints(
+                    withVisualFormat: "|-16-[titleLabel]-16-|",
+                    options: NSLayoutFormatOptions(),
+                    metrics: nil,
+                    views: ["titleLabel": titleLabel]
+                )
+            )
+            containerView.addConstraints([
+                NSLayoutConstraint(
+                    item: titleLabel,
+                    attribute: .top,
+                    relatedBy: .equal,
+                    toItem: containerView,
+                    attribute: .top,
+                    multiplier: 1,
+                    constant: 20
+                ),
+                NSLayoutConstraint(
+                    item: tableView,
+                    attribute: .top,
+                    relatedBy: .equal,
+                    toItem: titleLabel,
+                    attribute: .bottom,
+                    multiplier: 1,
+                    constant: 20
+                )
+            ])
+            
+            // labelBackedView
+            containerView.addConstraints(
+                NSLayoutConstraint.constraints(
+                    withVisualFormat: "|-0-[labelBackedView]-0-|",
+                    options: NSLayoutFormatOptions(),
+                    metrics: nil,
+                    views: ["labelBackedView": labelBackedView]
+                )
+            )
+            containerView.addConstraints([
+                NSLayoutConstraint(
+                    item: labelBackedView,
+                    attribute: .top,
+                    relatedBy: .equal,
+                    toItem: containerView,
+                    attribute: .top,
+                    multiplier: 1,
+                    constant: 0
+                ),
+                NSLayoutConstraint(
+                    item: labelBackedView,
+                    attribute: .bottom,
+                    relatedBy: .equal,
+                    toItem: tableView,
+                    attribute: .top,
+                    multiplier: 1,
+                    constant: 0
+                )
+            ])
+            
+            // topBorderline
+            labelBackedView.addConstraints(
+                NSLayoutConstraint.constraints(
+                    withVisualFormat: "|-0-[topBorderline]-0-|",
+                    options: NSLayoutFormatOptions(),
+                    metrics: nil,
+                    views: ["topBorderline": topBorderline]
+                )
+            )
+            labelBackedView.addConstraints([
+                NSLayoutConstraint(
+                    item: topBorderline,
+                    attribute: .height,
+                    relatedBy: .equal,
+                    toItem: nil,
+                    attribute: .notAnAttribute,
+                    multiplier: 1,
+                    constant: 1.0 / UIScreen.main.scale
+                ),
+                NSLayoutConstraint(
+                    item: topBorderline,
+                    attribute: .bottom,
+                    relatedBy: .equal,
+                    toItem: labelBackedView,
+                    attribute: .bottom,
+                    multiplier: 1,
+                    constant: 0
+                )
+            ])
+        } else {
+            containerView.addConstraints([
+                NSLayoutConstraint(
+                    item: tableView,
+                    attribute: .top,
+                    relatedBy: .equal,
+                    toItem: containerView,
+                    attribute: .top,
+                    multiplier: 1,
+                    constant: 0
+                )
+            ])
+        }
+
+        // tableView
         containerView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[tableView]|",
@@ -171,15 +314,6 @@ public final class ActionSheetController: UIViewController {
         containerView.addConstraints([
             NSLayoutConstraint(
                 item: tableView,
-                attribute: .top,
-                relatedBy: .equal,
-                toItem: containerView,
-                attribute: .top,
-                multiplier: 1,
-                constant: 0
-            ),
-            NSLayoutConstraint(
-                item: tableView,
                 attribute: .bottom,
                 relatedBy: .equal,
                 toItem: cancelButton,
@@ -189,6 +323,7 @@ public final class ActionSheetController: UIViewController {
             )
         ])
         
+        // cancelButton
         containerView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[cancelButton]|",
@@ -211,8 +346,8 @@ public final class ActionSheetController: UIViewController {
                 item: cancelButton,
                 attribute: .height,
                 relatedBy: .equal,
-                toItem: containerView,
-                attribute: .height,
+                toItem: nil,
+                attribute: .notAnAttribute,
                 multiplier: 0,
                 constant: ActionSheetController.fixedRowHeight
             )
@@ -257,8 +392,8 @@ public final class ActionSheetController: UIViewController {
             item: containerView,
             attribute: .height,
             relatedBy: .equal,
-            toItem: view,
-            attribute: .height,
+            toItem: nil,
+            attribute: .notAnAttribute,
             multiplier: 0,
             constant: containerViewHeight()
         )
