@@ -58,6 +58,10 @@ public final class ActionSheetController: UIViewController {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     fileprivate let labelBackedView: UIView = {
         let view = makeBlurView()
@@ -116,6 +120,7 @@ public final class ActionSheetController: UIViewController {
         prepareConstraints()
         setupUserInterface()
         setupConstraints()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleChangeStatusBarOrientation(sender:)), name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation, object: nil)
     }
     
     fileprivate func prepareTransitioningController() {
@@ -358,8 +363,11 @@ public final class ActionSheetController: UIViewController {
         view.removeConstraints([containerViewHeightConstraint])
         containerViewHeightConstraint = renewConstraint()
         view.addConstraint(containerViewHeightConstraint)
-        
         super.updateViewConstraints()
+        
+    }
+    func handleChangeStatusBarOrientation(sender: Notification) {
+        updateViewConstraints()
     }
     
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -383,9 +391,25 @@ public final class ActionSheetController: UIViewController {
     
     fileprivate func renewConstraint() -> NSLayoutConstraint {
         func containerViewHeight() -> CGFloat {
-            let height = CGFloat(actions.count) * ActionSheetController.fixedRowHeight
+            // 计算文本高度
+            var textHeight: CGFloat = 0
+            if contentTitle.characters.count > 0 {
+                textHeight = 40
+                let width = view.bounds.width - 32
+                let boundingRect = (contentTitle as NSString).boundingRect(
+                    with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine],
+                    attributes: [NSFontAttributeName: titleLabel.font],
+                    context: nil
+                )
+                textHeight += boundingRect.size.height
+            }
+            let height = CGFloat(actions.count) * ActionSheetController.fixedRowHeight + textHeight
             let maxHeight = view.bounds.height * CGFloat(0.67)
-            return (height > maxHeight ? maxHeight : height) + ActionSheetController.fixedRowHeight + 6
+            if height > maxHeight {
+                return maxHeight + ActionSheetController.fixedRowHeight + 36
+            }
+            return height + ActionSheetController.fixedRowHeight + 6
         }
         
         return NSLayoutConstraint(
