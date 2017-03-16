@@ -22,4 +22,7 @@
 
 - 添加title
 
-  ​
+
+### 2.1.2
+
+- touchs end dismiss

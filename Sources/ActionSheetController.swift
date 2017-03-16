@@ -370,8 +370,8 @@ public final class ActionSheetController: UIViewController {
         updateViewConstraints()
     }
     
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
         dismissWithCompletion(nil)
     }
     
