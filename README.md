@@ -4,13 +4,8 @@ ActionSheetController is an UIAlertController's APIs like ActionSheet control
 ### How does it look like?
 
 <p align="left">
-
-<img src="./ScreenShoots/1.gif" width=40%">&nbsp;
-<img src="./ScreenShoots/2.gif" width=40%"> 
-
+<img src="./ScreenShoots/1.gif" width=40%">&nbsp;<img src="./ScreenShoots/2.gif" width=40%">
 </p>
-
-
 
 ### How to use
 
@@ -30,7 +25,6 @@ controller.addAction(action)
 
 presentViewController(controller, animated: true, completion: nil)
 ```
-
 
 ### Notice
 
