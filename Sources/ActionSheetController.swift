@@ -63,8 +63,8 @@ public final class ActionSheetController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
-    fileprivate let labelBackedView: UIView = {
-        let view = makeBlurView()
+    fileprivate let labelBackedView: UIVisualEffectView = {
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         return view
@@ -108,8 +108,8 @@ public final class ActionSheetController: UIViewController {
         return button
     }()
     
-    fileprivate let containerView: UIView = {
-        let view = makeBlurView()
+    fileprivate let containerView: UIVisualEffectView = {
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -124,34 +124,38 @@ public final class ActionSheetController: UIViewController {
     }
     
     fileprivate func prepareTransitioningController() {
-        transitioningController.prepareForPresentActionHandler = { [unowned self] (fromView, toView) in
+        transitioningController.willPresent = { [unowned self] (fromView, toView) in
             toView.layoutIfNeeded()
             toView.removeConstraint(self.containerViewDisAppearedVerticalConstraint)
             toView.addConstraint(self.containerViewAppearedVerticalConstraint)
         }
-        transitioningController.duringPresentingActionHandler = { (fromView, toView) in
+        transitioningController.inPresent = { (fromView, toView) in
             toView.layoutIfNeeded()
         }
-        transitioningController.prepareForDismissActionHandler = { [unowned self] (fromView, toView) in
+        transitioningController.willDismiss = { [unowned self] (fromView, toView) in
             fromView.removeConstraint(self.containerViewAppearedVerticalConstraint)
             fromView.addConstraint(self.containerViewDisAppearedVerticalConstraint)
         }
-        transitioningController.duringDismissingActionHandler = { (fromView, toView) in
+        transitioningController.inDismiss = { (fromView, toView) in
             fromView.layoutIfNeeded()
         }
     }
     
     fileprivate func prepareConstraints() {
         containerViewAppearedVerticalConstraint = {
-            return NSLayoutConstraint(
-                item: containerView,
-                attribute: .bottom,
-                relatedBy: .equal,
-                toItem: view,
-                attribute: .bottom,
-                multiplier: 1,
-                constant: 0
-            )
+            if #available(iOS 11.0, *) {
+                return containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            } else {
+                return NSLayoutConstraint(
+                    item: containerView,
+                    attribute: .bottom,
+                    relatedBy: .equal,
+                    toItem: view,
+                    attribute: .bottom,
+                    multiplier: 1,
+                    constant: 0
+                )
+            }
         }()
         
         containerViewDisAppearedVerticalConstraint = {
@@ -176,11 +180,11 @@ public final class ActionSheetController: UIViewController {
         cancelButton.addTarget(self, action: #selector(ActionSheetController._dismiss), for: .touchUpInside)
         
         view.addSubview(containerView)
-        containerView.addSubview(cancelButton)
-        containerView.addSubview(tableView)
-        containerView.addSubview(labelBackedView)
-        labelBackedView.addSubview(topBorderline)
-        containerView.addSubview(titleLabel)
+        containerView.contentView.addSubview(cancelButton)
+        containerView.contentView.addSubview(tableView)
+        containerView.contentView.addSubview(labelBackedView)
+        labelBackedView.contentView.addSubview(topBorderline)
+        containerView.contentView.addSubview(titleLabel)
 
         tableView.register(ActionSheetCell.self, forCellReuseIdentifier: ActionSheetCell.identifier)
         tableView.delegate = self
@@ -204,7 +208,7 @@ public final class ActionSheetController: UIViewController {
         ])
         
         // titleLabel
-        if contentTitle.characters.count > 0 {
+        if !contentTitle.isEmpty {
             containerView.addConstraints(
                 NSLayoutConstraint.constraints(
                     withVisualFormat: "|-16-[titleLabel]-16-|",
@@ -364,9 +368,9 @@ public final class ActionSheetController: UIViewController {
         containerViewHeightConstraint = renewConstraint()
         view.addConstraint(containerViewHeightConstraint)
         super.updateViewConstraints()
-        
     }
-    func handleChangeStatusBarOrientation(sender: Notification) {
+    
+    @objc func handleChangeStatusBarOrientation(sender: Notification) {
         updateViewConstraints()
     }
     
@@ -379,7 +383,7 @@ public final class ActionSheetController: UIViewController {
         presentingViewController?.dismiss(animated: true, completion: completion)
     }
     
-    internal func _dismiss() {
+    @objc internal func _dismiss() {
         dismissWithCompletion(nil)
     }
     
@@ -393,13 +397,13 @@ public final class ActionSheetController: UIViewController {
         func containerViewHeight() -> CGFloat {
             // 计算文本高度
             var textHeight: CGFloat = 0
-            if contentTitle.characters.count > 0 {
+            if !contentTitle.isEmpty {
                 textHeight = 40
                 let width = view.bounds.width - 32
                 let boundingRect = (contentTitle as NSString).boundingRect(
                     with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
                     options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine],
-                    attributes: [NSFontAttributeName: titleLabel.font],
+                    attributes: [NSAttributedStringKey.font: titleLabel.font],
                     context: nil
                 )
                 textHeight += boundingRect.size.height
@@ -457,11 +461,11 @@ extension ActionSheetController: UITableViewDelegate {
 
 extension ActionSheetController: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return transitioningController.prepareForPresent()
+        return transitioningController.forPresent()
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return transitioningController.prepareForDismiss()
+        return transitioningController.forDismiss()
     }
 }
 
@@ -547,15 +551,4 @@ private func UIImageFrom(color: UIColor, size: CGSize = CGSize(width: 1, height:
     UIGraphicsEndImageContext()
     
     return image!
-}
-
-private func makeBlurView() -> UIView {
-    if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 8, minorVersion: 0, patchVersion: 0)) {
-        return UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-    } else {
-        let visualView = UIToolbar(frame: CGRect.zero)
-        visualView.barStyle = .default
-        visualView.isTranslucent = true
-        return visualView
-    }
 }
