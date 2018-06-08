@@ -52,7 +52,7 @@ public final class ActionSheetController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .custom
         modalTransitionStyle = .crossDissolve
-        transitioningDelegate = self
+        transitioningDelegate = transitioningController
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -454,18 +454,6 @@ extension ActionSheetController: UITableViewDelegate {
         dismissWithCompletion { () -> Void in
             action.handler?(action)
         }
-    }
-}
-
-// MARK: - Animation
-
-extension ActionSheetController: UIViewControllerTransitioningDelegate {
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return transitioningController.forPresent()
-    }
-    
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return transitioningController.forDismiss()
     }
 }
 

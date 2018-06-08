@@ -1,5 +1,5 @@
 PODS:
-  - PresentAnimatedTransitioningController (3.0.0)
+  - PresentAnimatedTransitioningController (3.0.1)
 
 DEPENDENCIES:
   - PresentAnimatedTransitioningController (~> 3.0)
@@ -9,8 +9,8 @@ SPEC REPOS:
     - PresentAnimatedTransitioningController
 
 SPEC CHECKSUMS:
-  PresentAnimatedTransitioningController: eb0302d650287d3af9ffec6c29f89856dec5cca7
+  PresentAnimatedTransitioningController: 188dbc7cc9646eeea2c75598a8dee49222acf8ed
 
 PODFILE CHECKSUM: ff3bb5ffe348eb295dbc65ccf498e028bfe1b79b
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3
