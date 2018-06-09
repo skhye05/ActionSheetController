@@ -3,7 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def dependency
-    pod 'PresentAnimatedTransitioningController', '~> 3.0'
+    pod 'ModalTransitionController', '~> 3.1'
 end
 
 target 'ActionSheetController' do

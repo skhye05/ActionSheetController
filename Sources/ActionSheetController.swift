@@ -2,8 +2,8 @@
 //  ActionSheetController.swift
 //  ActionSheetController
 //
-//  Created by Moch Xiao on 3/10/16.
-//  Copyright © @2016 Moch Xiao (https://github.com/cuzv).
+//  Created by Roy Shaw on 3/10/16.
+//  Copyright ©2016 RedRain (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 //
 
 import UIKit
-import PresentAnimatedTransitioningController
+import ModalTransitionController
 
 public final class ActionSheetController: UIViewController {
     public fileprivate(set) var actions: [SheetAction] = []
@@ -42,7 +42,7 @@ public final class ActionSheetController: UIViewController {
     fileprivate var containerViewAppearedVerticalConstraint: NSLayoutConstraint!
     fileprivate var containerViewDisAppearedVerticalConstraint: NSLayoutConstraint!
     
-    fileprivate let transitioningController: PresentAnimatedTransitioningController = PresentAnimatedTransitioningController()
+    fileprivate let transitionController: ModalTransitionController = ModalTransitionController()
     
     public init(title: String = "", titleColor: UIColor = UIColor.gray, cancelTitle: String = "取消", cancelTitleColor: UIColor = UIColor.black) {
         contentTitle = title
@@ -52,7 +52,7 @@ public final class ActionSheetController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .custom
         modalTransitionStyle = .crossDissolve
-        transitioningDelegate = transitioningController
+        transitioningDelegate = transitionController
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -124,19 +124,19 @@ public final class ActionSheetController: UIViewController {
     }
     
     fileprivate func prepareTransitioningController() {
-        transitioningController.willPresent = { [unowned self] (fromView, toView) in
+        transitionController.willPresent = { [unowned self] (fromView, toView) in
             toView.layoutIfNeeded()
             toView.removeConstraint(self.containerViewDisAppearedVerticalConstraint)
             toView.addConstraint(self.containerViewAppearedVerticalConstraint)
         }
-        transitioningController.inPresent = { (fromView, toView) in
+        transitionController.inPresentation = { (fromView, toView) in
             toView.layoutIfNeeded()
         }
-        transitioningController.willDismiss = { [unowned self] (fromView, toView) in
+        transitionController.willDismiss = { [unowned self] (fromView, toView) in
             fromView.removeConstraint(self.containerViewAppearedVerticalConstraint)
             fromView.addConstraint(self.containerViewDisAppearedVerticalConstraint)
         }
-        transitioningController.inDismiss = { (fromView, toView) in
+        transitionController.inDismissal = { (fromView, toView) in
             fromView.layoutIfNeeded()
         }
     }

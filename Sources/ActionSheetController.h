@@ -2,8 +2,8 @@
 //  ActionSheetController.h
 //  ActionSheetController
 //
-//  Created by Moch Xiao on 3/10/16.
-//  Copyright © 2016 Moch. All rights reserved.
+//  Created by Roy Shaw on 3/10/16.
+//  Copyright ©2016 RedRain. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -1,16 +1,16 @@
 PODS:
-  - PresentAnimatedTransitioningController (3.0.1)
+  - ModalTransitionController (3.1.0)
 
 DEPENDENCIES:
-  - PresentAnimatedTransitioningController (~> 3.0)
+  - ModalTransitionController (~> 3.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - PresentAnimatedTransitioningController
+    - ModalTransitionController
 
 SPEC CHECKSUMS:
-  PresentAnimatedTransitioningController: 188dbc7cc9646eeea2c75598a8dee49222acf8ed
+  ModalTransitionController: 1bc66cc411e231b163c9e8a6396ebd5eb5fd81a5
 
-PODFILE CHECKSUM: ff3bb5ffe348eb295dbc65ccf498e028bfe1b79b
+PODFILE CHECKSUM: 6a7edd2a7c8b2cfa7ca7263a03985b19cdb948af
 
 COCOAPODS: 1.5.3
