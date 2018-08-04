@@ -25,25 +25,25 @@
 //
 
 import UIKit
-import ModalTransitionController
+import ModalTransitioning
 
 public final class ActionSheetController: UIViewController {
-    public fileprivate(set) var actions: [SheetAction] = []
+    public private(set) var actions: [SheetAction] = []
     
-    fileprivate static let fixedRowHeight: CGFloat = 50
+    private static let fixedRowHeight: CGFloat = 50
     
-    fileprivate let contentTitle: String
-    fileprivate let contentTitleColor: UIColor
+    private let contentTitle: String
+    private let contentTitleColor: UIColor
     
-    fileprivate let cancelTitle: String
-    fileprivate let cancelTitleColor: UIColor
+    private let cancelTitle: String
+    private let cancelTitleColor: UIColor
     
-    fileprivate var containerViewHeightConstraint: NSLayoutConstraint!
-    fileprivate var containerViewAppearedVerticalConstraint: NSLayoutConstraint!
-    fileprivate var containerViewDisAppearedVerticalConstraint: NSLayoutConstraint!
+    private var containerViewHeightConstraint: NSLayoutConstraint!
+    private var containerViewAppearedVerticalConstraint: NSLayoutConstraint!
+    private var containerViewDisAppearedVerticalConstraint: NSLayoutConstraint!
     
-    fileprivate let transitionController: ModalTransitionController = ModalTransitionController()
-    
+    private lazy var modalTransitioningDelegate = ModalTransitioningDelegate(delegate: self)
+
     public init(title: String = "", titleColor: UIColor = UIColor.gray, cancelTitle: String = "取消", cancelTitleColor: UIColor = UIColor.black) {
         contentTitle = title
         contentTitleColor = titleColor
@@ -51,8 +51,7 @@ public final class ActionSheetController: UIViewController {
         self.cancelTitleColor = cancelTitleColor
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .custom
-        modalTransitionStyle = .crossDissolve
-        transitioningDelegate = transitionController
+        transitioningDelegate = modalTransitioningDelegate
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -63,21 +62,21 @@ public final class ActionSheetController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
-    fileprivate let labelBackedView: UIVisualEffectView = {
+    private let labelBackedView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         return view
     }()
     
-    fileprivate let topBorderline: UIView = {
+    private let topBorderline: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         return view
     }()
     
-    fileprivate let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.gray
         label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
@@ -88,7 +87,7 @@ public final class ActionSheetController: UIViewController {
         return label
     }()
     
-    fileprivate let tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.rowHeight = ActionSheetController.fixedRowHeight
         tableView.layoutMargins = UIEdgeInsets.zero
@@ -100,7 +99,7 @@ public final class ActionSheetController: UIViewController {
         return tableView
     }()
     
-    fileprivate let cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.white.withAlphaComponent(0.8)
@@ -108,40 +107,28 @@ public final class ActionSheetController: UIViewController {
         return button
     }()
     
-    fileprivate let containerView: UIVisualEffectView = {
+    private let containerView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let coverView: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.5)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        prepareTransitioningController()
         prepareConstraints()
         setupUserInterface()
         setupConstraints()
         NotificationCenter.default.addObserver(self, selector: #selector(handleChangeStatusBarOrientation(sender:)), name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation, object: nil)
     }
-    
-    fileprivate func prepareTransitioningController() {
-        transitionController.willPresent = { [unowned self] (fromView, toView) in
-            toView.layoutIfNeeded()
-            toView.removeConstraint(self.containerViewDisAppearedVerticalConstraint)
-            toView.addConstraint(self.containerViewAppearedVerticalConstraint)
-        }
-        transitionController.inPresentation = { (fromView, toView) in
-            toView.layoutIfNeeded()
-        }
-        transitionController.willDismiss = { [unowned self] (fromView, toView) in
-            fromView.removeConstraint(self.containerViewAppearedVerticalConstraint)
-            fromView.addConstraint(self.containerViewDisAppearedVerticalConstraint)
-        }
-        transitionController.inDismissal = { (fromView, toView) in
-            fromView.layoutIfNeeded()
-        }
-    }
-    
-    fileprivate func prepareConstraints() {
+
+    private func prepareConstraints() {
         containerViewAppearedVerticalConstraint = {
             if #available(iOS 11.0, *) {
                 return containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -171,7 +158,7 @@ public final class ActionSheetController: UIViewController {
         }()
     }
     
-    fileprivate func setupUserInterface() {
+    private func setupUserInterface() {
         titleLabel.text = contentTitle
         titleLabel.textColor = contentTitleColor
         
@@ -179,6 +166,9 @@ public final class ActionSheetController: UIViewController {
         cancelButton.setTitle(cancelTitle, for: UIControlState())
         cancelButton.addTarget(self, action: #selector(ActionSheetController._dismiss), for: .touchUpInside)
         
+        view.addSubview(coverView)
+        coverView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ActionSheetController.handleTapped(_:))))
+
         view.addSubview(containerView)
         containerView.contentView.addSubview(cancelButton)
         containerView.contentView.addSubview(tableView)
@@ -191,7 +181,15 @@ public final class ActionSheetController: UIViewController {
         tableView.dataSource = self
     }
     
-    fileprivate func setupConstraints() {
+    private func setupConstraints() {
+        // coverView
+        view.addConstraints([
+            NSLayoutConstraint(item: coverView, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: coverView, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: coverView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: coverView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0),
+        ])
+        
         // containerView
         view.addConstraints(
             NSLayoutConstraint.constraints(
@@ -374,16 +372,17 @@ public final class ActionSheetController: UIViewController {
         updateViewConstraints()
     }
     
-    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        dismissWithCompletion(nil)
-    }
-    
     internal func dismissWithCompletion(_ completion: (() -> Void)?) {
         presentingViewController?.dismiss(animated: true, completion: completion)
     }
     
-    @objc internal func _dismiss() {
+    @objc private func handleTapped(_ sender: UITapGestureRecognizer) {
+        if !containerView.frame.contains(sender.location(in: view)) {
+            dismissWithCompletion(nil)
+        }
+    }
+    
+    @objc private func _dismiss() {
         dismissWithCompletion(nil)
     }
     
@@ -393,7 +392,7 @@ public final class ActionSheetController: UIViewController {
     
     // MARK: - UI
     
-    fileprivate func renewConstraint() -> NSLayoutConstraint {
+    private func renewConstraint() -> NSLayoutConstraint {
         func containerViewHeight() -> CGFloat {
             // 计算文本高度
             var textHeight: CGFloat = 0
@@ -408,12 +407,10 @@ public final class ActionSheetController: UIViewController {
                 )
                 textHeight += boundingRect.size.height
             }
+            let bottomHeight = ActionSheetController.fixedRowHeight + 6 // cancel + spacing
             let height = CGFloat(actions.count) * ActionSheetController.fixedRowHeight + textHeight
-            let maxHeight = view.bounds.height * CGFloat(0.67)
-            if height > maxHeight {
-                return maxHeight + ActionSheetController.fixedRowHeight + 36
-            }
-            return height + ActionSheetController.fixedRowHeight + 6
+            let maxHeight = floor(view.bounds.height * CGFloat(0.67) / ActionSheetController.fixedRowHeight) * ActionSheetController.fixedRowHeight + textHeight
+            return (height < maxHeight ? height : maxHeight) + bottomHeight
         }
         
         return NSLayoutConstraint(
@@ -425,6 +422,32 @@ public final class ActionSheetController: UIViewController {
             multiplier: 0,
             constant: containerViewHeight()
         )
+    }
+}
+
+// MARK: - ModalTransitioning
+
+extension ActionSheetController: ModalTransitioning {
+    public func willPresent() {
+        view.layoutIfNeeded()
+        view.removeConstraint(containerViewDisAppearedVerticalConstraint)
+        view.addConstraint(containerViewAppearedVerticalConstraint)
+        coverView.alpha = 0
+    }
+    
+    public func presenting() {
+        view.layoutIfNeeded()
+        coverView.alpha = 1
+    }
+    
+    public func willDismiss() {
+        view.removeConstraint(containerViewAppearedVerticalConstraint)
+        view.addConstraint(containerViewDisAppearedVerticalConstraint)
+    }
+    
+    public func dismissing() {
+        view.layoutIfNeeded()
+        coverView.alpha = 0
     }
 }
 
@@ -464,7 +487,7 @@ private final class ActionSheetCell: UITableViewCell {
         return NSStringFromClass(self)
     }
     
-    fileprivate let contentLabel: UILabel = {
+    private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.black
         label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
@@ -482,7 +505,7 @@ private final class ActionSheetCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func setupUserInterface() {
+    private func setupUserInterface() {
         layoutMargins = UIEdgeInsets.zero
         separatorInset = UIEdgeInsets.zero
         backgroundColor = UIColor.clear
