@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  Sample
 //
-//  Created by Moch Xiao on 3/10/16.
-//  Copyright © 2016 Moch. All rights reserved.
+//  Created by Shaw on 3/10/16.
+//  Copyright © 2016 Shaw. All rights reserved.
 //
 
 import UIKit

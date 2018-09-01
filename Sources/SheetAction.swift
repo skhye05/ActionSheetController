@@ -2,8 +2,8 @@
 //  SheetAction.swift
 //  ActionSheetController
 //
-//  Created by Roy Shaw on 3/10/16.
-//  Copyright ©2016 RedRain (https://github.com/cuzv).
+//  Created by Shaw on 3/10/16.
+//  Copyright ©2016 Shaw (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
