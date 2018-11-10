@@ -1,5 +1,5 @@
 PODS:
-  - ModalTransitioning (4.0.0)
+  - ModalTransitioning (4.2.0)
 
 DEPENDENCIES:
   - ModalTransitioning (~> 4.0)
@@ -9,7 +9,7 @@ SPEC REPOS:
     - ModalTransitioning
 
 SPEC CHECKSUMS:
-  ModalTransitioning: a96e40ef1881875f0ff0196ffad47d9797582298
+  ModalTransitioning: 1e7ed1d13de9d6bf4fb43afc96acb74135f82066
 
 PODFILE CHECKSUM: f01c06517cdf9cf34a7d68601ed268de470b5335
 
