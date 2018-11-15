@@ -79,7 +79,7 @@ public final class ActionSheetController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.gray
-        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
         label.lineBreakMode = .byTruncatingTail
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -125,7 +125,7 @@ public final class ActionSheetController: UIViewController {
         prepareConstraints()
         setupUserInterface()
         setupConstraints()
-        NotificationCenter.default.addObserver(self, selector: #selector(handleChangeStatusBarOrientation(sender:)), name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleChangeStatusBarOrientation(sender:)), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
     }
 
     private func prepareConstraints() {
@@ -161,9 +161,9 @@ public final class ActionSheetController: UIViewController {
     private func setupUserInterface() {
         titleLabel.text = contentTitle
         titleLabel.textColor = contentTitleColor
-        
-        cancelButton.setTitleColor(cancelTitleColor, for: UIControlState())
-        cancelButton.setTitle(cancelTitle, for: UIControlState())
+
+        cancelButton.setTitleColor(cancelTitleColor, for: [])
+        cancelButton.setTitle(cancelTitle, for: [])
         cancelButton.addTarget(self, action: #selector(ActionSheetController._dismiss), for: .touchUpInside)
         
         view.addSubview(coverView)
@@ -194,7 +194,7 @@ public final class ActionSheetController: UIViewController {
         view.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[containerView]|",
-                options: NSLayoutFormatOptions(),
+                options: [],
                 metrics: nil,
                 views: ["containerView": containerView]
             )
@@ -210,7 +210,7 @@ public final class ActionSheetController: UIViewController {
             containerView.addConstraints(
                 NSLayoutConstraint.constraints(
                     withVisualFormat: "|-16-[titleLabel]-16-|",
-                    options: NSLayoutFormatOptions(),
+                    options: [],
                     metrics: nil,
                     views: ["titleLabel": titleLabel]
                 )
@@ -240,7 +240,7 @@ public final class ActionSheetController: UIViewController {
             containerView.addConstraints(
                 NSLayoutConstraint.constraints(
                     withVisualFormat: "|-0-[labelBackedView]-0-|",
-                    options: NSLayoutFormatOptions(),
+                    options: [],
                     metrics: nil,
                     views: ["labelBackedView": labelBackedView]
                 )
@@ -270,7 +270,7 @@ public final class ActionSheetController: UIViewController {
             labelBackedView.addConstraints(
                 NSLayoutConstraint.constraints(
                     withVisualFormat: "|-0-[topBorderline]-0-|",
-                    options: NSLayoutFormatOptions(),
+                    options: [],
                     metrics: nil,
                     views: ["topBorderline": topBorderline]
                 )
@@ -313,7 +313,7 @@ public final class ActionSheetController: UIViewController {
         containerView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[tableView]|",
-                options: NSLayoutFormatOptions(),
+                options: [],
                 metrics: nil,
                 views: ["tableView": tableView]
             )
@@ -334,7 +334,7 @@ public final class ActionSheetController: UIViewController {
         containerView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|[cancelButton]|",
-                options: NSLayoutFormatOptions(),
+                options: [],
                 metrics: nil,
                 views: ["cancelButton": cancelButton]
             )
@@ -402,7 +402,7 @@ public final class ActionSheetController: UIViewController {
                 let boundingRect = (contentTitle as NSString).boundingRect(
                     with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
                     options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine],
-                    attributes: [NSAttributedStringKey.font: titleLabel.font],
+                    attributes: [.font: titleLabel.font],
                     context: nil
                 )
                 textHeight += boundingRect.size.height
@@ -489,13 +489,13 @@ private final class ActionSheetCell: UITableViewCell {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.black
-        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUserInterface()
     }
@@ -521,7 +521,7 @@ private final class ActionSheetCell: UITableViewCell {
         contentView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "|-8-[label]-8-|",
-                options: NSLayoutFormatOptions(),
+                options: [],
                 metrics: nil,
                 views: views
             )
@@ -529,7 +529,7 @@ private final class ActionSheetCell: UITableViewCell {
         contentView.addConstraints(
             NSLayoutConstraint.constraints(
                 withVisualFormat: "V:|[label]|",
-                options: NSLayoutFormatOptions(),
+                options: [],
                 metrics: nil,
                 views: views
             )
