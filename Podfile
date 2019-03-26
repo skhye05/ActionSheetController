@@ -3,7 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def dependency
-    pod 'ModalTransitioning', '~> 4.0'
+    pod 'ModalTransitioning', '~> 4.3'
 end
 
 target 'ActionSheetController' do
