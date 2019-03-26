@@ -1,5 +1,5 @@
 PODS:
-  - ModalTransitioning (4.2.0)
+  - ModalTransitioning (4.3.0)
 
 DEPENDENCIES:
   - ModalTransitioning (~> 4.3)
